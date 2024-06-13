@@ -24,7 +24,7 @@ pipeline {
             }
             steps {
                 script {
-                    git branch: "${params.branch_name}", url: 'https://github.com/chrisdylan237/Demo1.git'
+                    git branch: "${params.branch_name}", url: 'https://github.com/Royce237/s5royce.git'
                 }
             }
         }
