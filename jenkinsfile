@@ -16,6 +16,15 @@ pipeline {
             }
         }
         
+        stage('Install sshpass') {
+            steps {
+                script {
+                    sh "sudo apt update -y"
+                    sh "sudo apt install -y sshpass"
+                }
+            }
+        }
+        
         stage('Clone from GitHub') {
             when {
                 expression {
@@ -24,7 +33,7 @@ pipeline {
             }
             steps {
                 script {
-                    git branch: "${params.branch_name}", url: 'https://github.com/Royce237/s5royce.git'
+                    checkout([$class: 'GitSCM', branches: [[name: params.branch_name]], userRemoteConfigs: [[url: 'https://github.com/Royce237/s5royce.git']]])
                 }
             }
         }
@@ -37,8 +46,6 @@ pipeline {
             }
             steps {
                 script {
-                    sh " sudo apt update -y "
-                    sh "sudo apt install sshpass"
                     sh "sshpass -p '${params.password}' scp -o StrictHostKeyChecking=no -r * ${params.username}@${params.server_dns}:."
                 }
             }
@@ -73,7 +80,7 @@ pipeline {
         stage('Delete application') {
             when {
                 expression {
-                    params.delete_application == true
+                    params.delete_application
                 }
             }
             steps {
